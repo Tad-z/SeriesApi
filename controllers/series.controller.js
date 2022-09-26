@@ -1,5 +1,4 @@
 const Series = require("../models/series.js");
-const mongoose = require("mongoose")
 const paginatedResults = require("./paginatedResults.js")
 
 exports.postSeries = async (req,res) => {
@@ -19,15 +18,15 @@ exports.postSeries = async (req,res) => {
 }
 exports.getAllSeries = async (req, res) => {
     try {
-      const series = await Series.find().exec();
+      const series = await Series.find().limit(18).exec();
       if (!series.length) return res.json([]);
-      const data = await (res.paginatedResults);
-      count= req.query.limit
+     const result = await res.paginatedResults
       res.status(200).json({
         message: "Series retrieved successfully",
-        count,
-        data
-    });
+        result,
+        // count: series.length,
+        // series
+      });
   
     } catch (err) {
       console.log(err.message);

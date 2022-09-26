@@ -6,23 +6,23 @@ const paginatedResults =  (model) => {
         const start = (page - 1) * limit
         const end = page * limit
 
-        const results = {}
+        const result = {}
 
         if (end < await model.countDocuments().exec()) {
-            results.next = {
+            result.next = {
                 page: page + 1,
                 limit: limit
             }
         }
         if (start > 0) {
-            results.previous = {
+            result.previous = {
                 page: page - 1,
                 limit: limit
             }
         }
         try {
-            results.results = await model.find().limit(limit).skip(start).exec()
-            res.paginatedResults = results
+            result.series = await model.find().limit(limit).skip(start).exec()
+            res.paginatedResults = result
             next()
         } catch (err) {
             res.status(500).json({ message: err.message });
