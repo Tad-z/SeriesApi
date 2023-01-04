@@ -2,6 +2,7 @@ const Series = require("../models/series.js");
 
 exports.postSeries = async (req, res) => {
   try {
+    console.log(req.file);
     const series = new Series({
       image: req.file.path,
       name: req.body.name,
@@ -9,7 +10,9 @@ exports.postSeries = async (req, res) => {
       FavCast: req.body.FavCast,
       status: req.body.status,
     });
+    console.log(req.file);
     const s = await series.save()
+    console.log(req.file);
     res.status(200).json(s)
   } catch (err) {
     console.log(err.message);
