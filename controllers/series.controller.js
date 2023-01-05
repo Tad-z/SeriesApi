@@ -2,7 +2,12 @@ const Series = require("../models/series.js");
 
 exports.postSeries = async (req, res) => {
   try {
-    console.log(req.file);
+    const name = Series.findOne({ name: req.body.name }).exec();
+    if (name)
+      return res.status(400).json({
+        message:
+          "Series already exists choose another of your favourite series",
+      });
     const series = new Series({
       image: req.file.path,
       name: req.body.name,
@@ -10,20 +15,18 @@ exports.postSeries = async (req, res) => {
       FavCast: req.body.FavCast,
       status: req.body.status,
     });
-    console.log(req.file);
-    const s = await series.save()
-    console.log(req.file);
-    res.status(200).json(s)
+    const s = await series.save();
+    res.status(200).json(s);
   } catch (err) {
     console.log(err.message);
   }
-}
+};
 exports.getAllSeries = async (req, res) => {
   try {
     const series = await Series.find().exec();
     if (!series.length) return res.json([]);
-    count = series.length
-    const result = await res.paginatedResults
+    count = series.length;
+    const result = await res.paginatedResults;
     res.status(200).json({
       message: "Series retrieved successfully",
       count,
@@ -31,15 +34,12 @@ exports.getAllSeries = async (req, res) => {
       // count: series.length,
       // series
     });
-
   } catch (err) {
     console.log(err.message);
   }
 };
 
-exports.getSeries = async (req, res) => {
-
-}
+exports.getSeries = async (req, res) => {};
 
 exports.updateSeries = async (req, res) => {
   try {
@@ -60,7 +60,7 @@ exports.updateSeries = async (req, res) => {
     console.log(err.message);
     res.json("error");
   }
-}
+};
 
 exports.deleteAllSeries = async (req, res) => {
   try {
@@ -72,14 +72,9 @@ exports.deleteAllSeries = async (req, res) => {
   } catch (err) {
     console.log(err.message);
     res.status(400).json({
-      message:
-        err.message || "Some error occurred while removing all Series.",
+      message: err.message || "Some error occurred while removing all Series.",
     });
   }
-}
+};
 
-exports.deleteSeries = async (req, res) => {
-
-}
-
-
+exports.deleteSeries = async (req, res) => {};
