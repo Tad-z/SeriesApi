@@ -2,21 +2,24 @@ const Series = require("../models/series.js");
 
 exports.postSeries = async (req, res) => {
   try {
-    const name = Series.findOne({ name: req.body.name }).exec();
-    if (name)
+    const checkName = Series.find({ name: req.body.name }).exec();
+    if ((await checkName).length > 0) {
       return res.status(400).json({
         message:
           "Series already exists choose another of your favourite series",
       });
-    const series = new Series({
-      image: req.file.path,
-      name: req.body.name,
-      genre: req.body.genre,
-      FavCast: req.body.FavCast,
-      status: req.body.status,
-    });
-    const s = await series.save();
-    res.status(200).json(s);
+    } else {
+      const series = new Series({
+        image: req.file.path,
+        name: req.body.name,
+        genre: req.body.genre,
+        FavCast: req.body.FavCast,
+        status: req.body.status,
+      });
+      const s = await series.save();
+      res.status(200).json(s);
+    }
+    
   } catch (err) {
     console.log(err.message);
   }
