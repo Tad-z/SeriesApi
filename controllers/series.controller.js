@@ -2,7 +2,7 @@ const Series = require("../models/series.js");
 
 exports.postSeries = async (req, res) => {
   try {
-    const checkName = Series.find({ name: req.body.name }).exec();
+    const checkName = Series.find({ name: req.body.name.toLowerCase() }).exec();
     if ((await checkName).length > 0) {
       return res.status(400).json({
         message:
@@ -11,7 +11,7 @@ exports.postSeries = async (req, res) => {
     } else {
       const series = new Series({
         image: req.file.path,
-        name: req.body.name,
+        name: req.body.name.toLowerCase(),
         genre: req.body.genre,
         FavCast: req.body.FavCast,
         status: req.body.status,
