@@ -19,7 +19,6 @@ exports.postSeries = async (req, res) => {
       const s = await series.save();
       res.status(200).json(s);
     }
-    
   } catch (err) {
     console.log(err.message);
   }
@@ -41,8 +40,6 @@ exports.getAllSeries = async (req, res) => {
     console.log(err.message);
   }
 };
-
-exports.getSeries = async (req, res) => {};
 
 exports.updateSeries = async (req, res) => {
   try {
@@ -80,4 +77,22 @@ exports.deleteAllSeries = async (req, res) => {
   }
 };
 
-exports.deleteSeries = async (req, res) => {};
+exports.deleteSeries = async (req, res) => {
+  try {
+    const id = req.params.id;
+    await Series.findByIdAndRemove(id)
+    .then(data => {
+      if (!data) {
+        res.status(404).json({
+          message: `Cannot delete Series with id=${id}. Maybe Series was not found!`,
+        });
+      } else {
+        res.status(200).json({
+          message: "Series was deleted successfully!",
+        });
+      }
+    });
+  } catch (err) {
+    console.log(err.message);
+  }
+};
