@@ -7,7 +7,9 @@ const main = require("./models/db.js");
 const seriesRouter = require("./routes/series.js")
 
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+    origin: ["http://localhost:3000","https://series.onrender.com"]
+}));
 app.use(morgan("dev"));
 app.use(express.urlencoded({ extended: true }));
 app.use('/uploads', express.static('uploads'))
