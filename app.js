@@ -8,13 +8,14 @@ const main = require("./models/db.js");
 const seriesRouter = require("./routes/series.js")
 
 
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
 app.use(express.json());
 app.use(cors({
     origin: ["http://localhost:3000","https://series-app.onrender.com"]
 }));
 app.use(morgan("dev"));
 app.use(express.urlencoded({ extended: true }));
+app.use('/uploads', express.static('uploads'))
 app.use("/series", seriesRouter);
 
 
