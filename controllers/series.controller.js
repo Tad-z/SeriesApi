@@ -3,6 +3,7 @@ const Series = require("../models/series.js");
 exports.postSeries = async (req, res) => {
   try {
     const checkName = Series.find({ name: req.body.name.toLowerCase() }).exec();
+    console.log(req.file.path)
     if ((await checkName).length > 0) {
       return res.status(400).json({
         message:

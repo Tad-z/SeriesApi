@@ -15,7 +15,6 @@ app.use(cors({
 }));
 app.use(morgan("dev"));
 app.use(express.urlencoded({ extended: true }));
-app.use('/uploads', express.static('uploads'))
 app.use("/series", seriesRouter);
 
 
