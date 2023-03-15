@@ -11,7 +11,7 @@ const seriesRouter = require("./routes/series.js")
 
 app.use(express.json());
 app.use(cors({
-    origin: ["http://localhost:3000","https://series-app.onrender.com", "https://series-app-psi.vercel.app/addSeries"]
+    origin: ["http://localhost:3000", "https://series-app-psi.vercel.app"]
 }));
 app.use(morgan("dev"));
 app.use(express.urlencoded({ extended: true }));
