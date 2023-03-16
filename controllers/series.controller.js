@@ -26,7 +26,7 @@ exports.postSeries = async (req, res) => {
 };
 exports.getAllSeries = async (req, res) => {
   try {
-    const series = await Series.find().exec();
+    const series = await Series.find().sort({ name:1 }).exec();
     if (!series.length) return res.json([]);
     count = series.length;
     const result = await res.paginatedResults;

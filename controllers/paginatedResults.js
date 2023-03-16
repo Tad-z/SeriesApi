@@ -21,7 +21,7 @@ const paginatedResults =  (model) => {
             }
         }
         try {
-            result.series = await model.find().limit(limit).skip(start).exec()
+            result.series = await model.find().sort({ name:1 }).limit(limit).skip(start).exec()
             res.paginatedResults = result
             next()
         } catch (err) {
