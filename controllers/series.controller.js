@@ -3,7 +3,7 @@ const Series = require("../models/series.js");
 exports.postSeries = async (req, res) => {
   try {
     const checkName = Series.find({ name: req.body.name.toLowerCase() }).exec();
-    console.log(req.file.path)
+    console.log(req.file.path);
     if ((await checkName).length > 0) {
       return res.status(400).json({
         message:
@@ -13,9 +13,9 @@ exports.postSeries = async (req, res) => {
       const series = new Series({
         image: req.file.path,
         name: req.body.name.toLowerCase(),
-        genre: req.body.genre,
+        genre: req.body.genre.toLowerCase(),
         FavCast: req.body.FavCast,
-        status: req.body.status,
+        status: req.body.status.toLowerCase(),
       });
       const s = await series.save();
       res.status(200).json(s);
@@ -26,7 +26,7 @@ exports.postSeries = async (req, res) => {
 };
 exports.getAllSeries = async (req, res) => {
   try {
-    const series = await Series.find().sort({ name:1 }).exec();
+    const series = await Series.find().exec();
     if (!series.length) return res.json([]);
     count = series.length;
     const result = await res.paginatedResults;
@@ -36,6 +36,52 @@ exports.getAllSeries = async (req, res) => {
       result,
       // count: series.length,
       // series
+    });
+  } catch (err) {
+    console.log(err.message);
+  }
+};
+
+exports.sortSeriesByGenre = async (req, res) => {
+  try {
+    const genre = req.body.genre; // get the genre value from the request body
+    if (!genre) {
+      return res.status(400).json({
+        message: "Genre name not specified",
+      });
+    }
+    const seriesByGenre = await Series.find({
+      genre: { $regex: genre, $options: "i" },
+    }).exec();
+    console.log(req.body.genre);
+    if (!seriesByGenre.length) return res.json([]);
+    res.status(200).json({
+      message: "Series retrieved successfully",
+      count: seriesByGenre.length,
+      seriesByGenre,
+    });
+  } catch (err) {
+    console.log(err.message);
+  }
+};
+
+exports.sortSeriesByStatus = async (req, res) => {
+  try {
+    const status = req.body.status; // get the status value from the request body
+    if (!status) {
+      return res.status(400).json({
+        message: "Status name not specified",
+      });
+    }
+    const seriesByStatus = await Series.find({
+      status: { $regex: status, $options: "i" },
+    }).exec();
+    console.log(req.body.status);
+    if (!seriesByStatus.length) return res.json([]);
+    res.status(200).json({
+      message: "Series retrieved successfully",
+      count: seriesByStatus.length,
+      seriesByStatus,
     });
   } catch (err) {
     console.log(err.message);
@@ -81,8 +127,7 @@ exports.deleteAllSeries = async (req, res) => {
 exports.deleteSeries = async (req, res) => {
   try {
     const id = req.params.id;
-    await Series.findByIdAndRemove(id)
-    .then(data => {
+    await Series.findByIdAndRemove(id).then((data) => {
       if (!data) {
         res.status(404).json({
           message: `Cannot delete Series with id=${id}. Maybe Series was not found!`,

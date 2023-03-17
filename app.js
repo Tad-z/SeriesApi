@@ -5,7 +5,8 @@ const path = require("path");
 require("dotenv").config();
 const cors = require("cors");
 const main = require("./models/db.js");
-const seriesRouter = require("./routes/series.js")
+const seriesRouter = require("./routes/series.js");
+const sortedSeriesRouter = require("./routes/sortedSeries.js")
 
 
 
@@ -17,6 +18,7 @@ app.use(morgan("dev"));
 app.use(express.urlencoded({ extended: true }));
 app.use('/uploads', express.static('uploads'))
 app.use("/series", seriesRouter);
+app.use("/sortedSeries", sortedSeriesRouter);
 
 
 main()
