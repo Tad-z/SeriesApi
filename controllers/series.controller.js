@@ -15,7 +15,7 @@ exports.postSeries = async (req, res) => {
         name: req.body.name.toLowerCase(),
         genre: req.body.genre.toLowerCase(),
         FavCast: req.body.FavCast,
-        status: req.body.status.toLowerCase(),
+        status: req.body.status,
       });
       const s = await series.save();
       res.status(200).json(s);
@@ -127,6 +127,7 @@ exports.deleteAllSeries = async (req, res) => {
 exports.deleteSeries = async (req, res) => {
   try {
     const id = req.params.id;
+    console.log(id);
     await Series.findByIdAndRemove(id).then((data) => {
       if (!data) {
         res.status(404).json({
