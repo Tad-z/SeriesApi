@@ -44,7 +44,7 @@ exports.getAllSeries = async (req, res) => {
 
 exports.sortSeriesByGenre = async (req, res) => {
   try {
-    const genre = req.body.genre; // get the genre value from the request body
+    let genre = req.query.genre// get the genre value from the request body
     if (!genre) {
       return res.status(400).json({
         message: "Genre name not specified",
@@ -67,10 +67,10 @@ exports.sortSeriesByGenre = async (req, res) => {
 
 exports.sortSeriesByStatus = async (req, res) => {
   try {
-    const status = req.body.status; // get the status value from the request body
+    let status = req.query.status
     if (!status) {
       return res.status(400).json({
-        message: "Status name not specified",
+        message: "Status not specified",
       });
     }
     const seriesByStatus = await Series.find({

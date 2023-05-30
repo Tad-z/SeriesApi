@@ -3,8 +3,7 @@ const path = require("path");
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    const uploadFilePath = path.resolve(__dirname, "../uploads");
-    cb(null, uploadFilePath);
+    cb(null, './uploads');
   },
 
   filename: function (req, file, cb) {
@@ -12,7 +11,7 @@ const storage = multer.diskStorage({
   },
 });
 const fileFilter = (req, file, cb) => {
-  if (file.mimetype === "image/jpeg" || file.mimetype === "image/png") {
+  if (file.mimetype === "image/jpeg" || file.mimetype === "image/png" || file.mimetype === "image/webp") {
     cb(null, true);
   } else {
     cb(new Error("Make sure the image file extension is jpeg/jpg or png"), false);
