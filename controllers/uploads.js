@@ -1,11 +1,16 @@
 const multer = require("multer");
 const path = require("path");
 
+function getRootDirectory() {
+  return path.resolve(__dirname, "../"); // Adjust the number of '..' based on your folder structure
+}
+
 const storage = multer.diskStorage({
   // destination: function (req, file, cb) {
   //   cb(null, './uploads');
   destination: function (req, file, cb) {
-    cb(null, path.join(__dirname, 'uploads'));
+    const rootDirectory = getRootDirectory();
+    cb(null, path.join(rootDirectory, 'uploads'));
   },
 
   filename: function (req, file, cb) {
