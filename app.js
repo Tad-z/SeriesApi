@@ -23,8 +23,8 @@ app.use("/sortedSeries", sortedSeriesRouter);
 
 main()
     .then(() => {
+        app.listen(5000, () => {
+            console.log("Server started...");
+        })
         return console.log("DB connected...");
     }).catch(console.error);
-app.listen(5000, () => {
-    console.log("Server started...");
-})
