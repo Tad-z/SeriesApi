@@ -1,32 +1,63 @@
 const Series = require("../models/series.js");
+// const uploadImage = require("../controllers/uploads.js");
+const uploadFilesMiddleware = require("../controllers/uploads.js");
+
+
+// exports.uploadImage = async (req, res) => {
+//   try {
+//     await uploadFilesMiddleware(req, res);
+//     console.log(req.file);
+    
+//   } catch (err) {
+    
+//   }
+// }
 
 exports.postSeries = async (req, res) => {
   try {
-    const checkName = Series.find({ name: req.body.name.toLowerCase() }).exec();
-    console.log(req.file.path);
+    const checkName = await Series.find({ name: req.body.name.toLowerCase() }).exec();
+    
     if ((await checkName).length > 0) {
       return res.status(400).json({
-        message:
-          "Series already exists choose another of your favourite series",
+        message: "Series already exists. Please choose another name for your series.",
       });
-    } else {
-      const series = new Series({
-        image: req.file.path,
-        name: req.body.name.toLowerCase(),
-        genre: req.body.genre.toLowerCase(),
-        FavCast: req.body.FavCast,
-        status: req.body.status,
-      });
-      const s = await series.save();
-      res.status(200).json(s);
     }
+    
+    // await uploadFilesMiddleware(req, res);
+    
+    // if (req.file == undefined) {
+    //   return res.status(400).json({
+    //     message: "Please upload a file!",
+    //   });
+    // }
+    
+    const series = new Series({
+      image: req.file.path,
+      name: req.body.name.toLowerCase(),
+      genre: req.body.genre.toLowerCase(),
+      FavCast: req.body.FavCast,
+      status: req.body.status,
+    });
+    
+    const savedSeries = await series.save();
+    res.status(200).json(savedSeries);
   } catch (err) {
-    console.log(err.message);
+    console.error(err.message);
+    // if (err.code === "LIMIT_FILE_SIZE") {
+    //   return res.status(500).json({
+    //     message: "File size cannot be larger than 5MB!",
+    //   });
+    // }
+    // res.status(500).json({
+    //   message: `Could not upload the file: ${req.file.originalname}. ${err}`,
+    // });
   }
 };
+
+
 exports.getAllSeries = async (req, res) => {
   try {
-    const series = await Series.find().sort({_id:-1}).exec();
+    const series = await Series.find().sort({ _id: -1 }).exec();
     if (!series.length) return res.json([]);
     count = series.length;
     const result = await res.paginatedResults;
