@@ -1,34 +1,40 @@
-const paginatedResults =  (model) => {
+const paginatedResults = (model) => {
     return async (req, res, next) => {
-        const page = parseInt(req.query.page)
-        const limit = parseInt(req.query.limit)
-
-        const start = (page - 1) * limit
-        const end = page * limit
-
-        const result = {}
-
-        if (end < await model.countDocuments().exec()) {
-            result.next = {
-                page: page + 1,
-                limit: limit
-            }
-        }
+      const page = parseInt(req.query.page) || 1;
+      const limit = parseInt(req.query.limit) || 8;
+  
+      const start = (page - 1) * limit;
+      const end = page * limit;
+  
+      const result = {};
+  
+      try {
+        const totalDocuments = await model.countDocuments().exec();
+  
         if (start > 0) {
-            result.previous = {
-                page: page - 1,
-                limit: limit
-            }
+          result.previous = {
+            page: page - 1,
+            limit: limit,
+          };
         }
-        try {
-            result.series = await model.find().sort({ _id:-1 }).limit(limit).skip(start).exec()
-            res.paginatedResults = result
-            next()
-        } catch (err) {
-            res.status(500).json({ message: err.message });
+  
+        if (end < totalDocuments) {
+          result.next = {
+            page: page + 1,
+            limit: limit,
+          };
         }
-
-    }
-}
-
-module.exports = paginatedResults
+  
+        result.series = await model.find().sort({ _id: -1 }).limit(limit).skip(start).exec();
+  
+        // Send the paginated results in the response body
+        res.paginatedResults = result;
+        next();
+      } catch (err) {
+        console.log(err)
+      }
+    };
+  };
+  
+  module.exports = paginatedResults;
+  

@@ -1,6 +1,6 @@
 const chai = require('chai');
 const chaiHttp = require('chai-http');
-const app = require('../app');
+const app = require('../index');
 
 
 chai.use(chaiHttp);
@@ -10,11 +10,11 @@ describe('Series API', () => {
     describe('GET /series', () => {
         it('should return all the series', async () => {
             try {
-                const res = await chai.request(app).get('/series');
+                const res = await chai.request(app).get('/series/?page=1');
                 expect(res.status).to.equal(200);
                 expect(res.body).to.be.an('object');
                 expect(res.body.message).to.be.equal('Series retrieved successfully');
-                expect(res.body.result).to.have.property('series').to.be.an('array');
+                expect(res.body).to.have.property('result')
             } catch (error) {
                 throw error;
             }

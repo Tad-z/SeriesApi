@@ -1,36 +1,37 @@
 const Series = require("../models/series.js");
 // const uploadImage = require("../controllers/uploads.js");
 const uploadFilesMiddleware = require("../controllers/uploads.js");
+const paginatedResults = require("./paginatedResults.js");
 
 
 // exports.uploadImage = async (req, res) => {
 //   try {
 //     await uploadFilesMiddleware(req, res);
 //     console.log(req.file);
-    
+
 //   } catch (err) {
-    
+
 //   }
 // }
 
 exports.postSeries = async (req, res) => {
   try {
     const checkName = await Series.find({ name: req.body.name.toLowerCase() }).exec();
-    
+
     if ((await checkName).length > 0) {
       return res.status(400).json({
         message: "Series already exists. Please choose another name for your series.",
       });
     }
-    
+
     // await uploadFilesMiddleware(req, res);
-    
+
     // if (req.file == undefined) {
     //   return res.status(400).json({
     //     message: "Please upload a file!",
     //   });
     // }
-    
+
     const series = new Series({
       image: req.file.path,
       name: req.body.name.toLowerCase(),
@@ -38,7 +39,7 @@ exports.postSeries = async (req, res) => {
       FavCast: req.body.FavCast,
       status: req.body.status,
     });
-    
+
     const savedSeries = await series.save();
     res.status(200).json(savedSeries);
   } catch (err) {
@@ -57,19 +58,19 @@ exports.postSeries = async (req, res) => {
 
 exports.getAllSeries = async (req, res) => {
   try {
-    const series = await Series.find().sort({ _id: -1 }).exec();
-    if (!series.length) return res.json([]);
-    count = series.length;
-    const result = await res.paginatedResults;
-    res.status(200).json({
-      message: "Series retrieved successfully",
-      count,
-      result,
-      // count: series.length,
-      // series
+    // Use the paginatedResults middleware to paginate series data
+    paginatedResults(Series)(req, res, async () => {
+      const result = res.paginatedResults;
+
+      // Respond with the paginated data
+      res.status(200).json({
+        message: "Series retrieved successfully",
+        result
+      });
+
     });
   } catch (err) {
-    console.log(err.message);
+    res.status(500).json({ message: err.message });
   }
 };
 

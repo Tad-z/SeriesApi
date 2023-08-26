@@ -32,4 +32,4 @@ main()
         return console.log("DB connected...");
     }).catch(console.error);
 
-    module.exports = app;
+module.exports = app;
