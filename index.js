@@ -34,7 +34,7 @@ main()
     }).catch(console.error);
 
 // Schedule the cron job to make a request every 10 minutes to keep the API alive
-cron.schedule('0 */1 * * *', async () => {
+cron.schedule('*/30 * * * *', async () => {
     try {
       // Make a GET request to a specific endpoint (e.g., /api/keep-alive)
       const response = await axios.get(`https://series-api-nld9.onrender.com/series/?page=1`)
