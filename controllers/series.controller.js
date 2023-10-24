@@ -1,36 +1,16 @@
 const Series = require("../models/series.js");
-// const uploadImage = require("../controllers/uploads.js");
-const uploadFilesMiddleware = require("../controllers/uploads.js");
 const paginatedResults = require("./paginatedResults.js");
 
-
-// exports.uploadImage = async (req, res) => {
-//   try {
-//     await uploadFilesMiddleware(req, res);
-//     console.log(req.file);
-
-//   } catch (err) {
-
-//   }
-// }
 
 exports.postSeries = async (req, res) => {
   try {
     const checkName = await Series.find({ name: req.body.name.toLowerCase() }).exec();
 
-    if ((await checkName).length > 0) {
+    if ((checkName).length > 0) {
       return res.status(400).json({
         message: "Series already exists. Please choose another name for your series.",
       });
     }
-
-    // await uploadFilesMiddleware(req, res);
-
-    // if (req.file == undefined) {
-    //   return res.status(400).json({
-    //     message: "Please upload a file!",
-    //   });
-    // }
 
     const series = new Series({
       image: req.file.path,
@@ -44,25 +24,39 @@ exports.postSeries = async (req, res) => {
     res.status(200).json(savedSeries);
   } catch (err) {
     console.error(err.message);
-    // if (err.code === "LIMIT_FILE_SIZE") {
-    //   return res.status(500).json({
-    //     message: "File size cannot be larger than 5MB!",
-    //   });
-    // }
-    // res.status(500).json({
-    //   message: `Could not upload the file: ${req.file.originalname}. ${err}`,
-    // });
+    if (err.code === "LIMIT_FILE_SIZE") {
+      return res.status(500).json({
+        message: "File size cannot be larger than 5MB!",
+      });
+    }
+    res.status(500).json({
+      message: `Could not upload the file: ${req.file.originalname}. ${err}`,
+    });
   }
 };
 
 
 exports.getAllSeries = async (req, res) => {
   try {
-    // Use the paginatedResults middleware to paginate series data
+    const series = await Series.find().exec();
+    if (!series.length) return res.json([]);
+    res.status(200).json({
+      message: "Series retrieved successfully",
+      count: series.length,
+      series,
+    });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+exports.getAllSeriesPaginated = async (req, res) => {
+  try {
+
     paginatedResults(Series)(req, res, async () => {
       const result = res.paginatedResults;
+      if (!result) return res.json([]);
 
-      // Respond with the paginated data
       res.status(200).json({
         message: "Series retrieved successfully",
         result
@@ -76,7 +70,7 @@ exports.getAllSeries = async (req, res) => {
 
 exports.sortSeriesByGenre = async (req, res) => {
   try {
-    let genre = req.query.genre// get the genre value from the request body
+    let genre = req.query.genre
     if (!genre) {
       return res.status(400).json({
         message: "Genre name not specified",
