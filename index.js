@@ -33,15 +33,15 @@ main()
         return console.log("DB connected...");
     }).catch(console.error);
 
-// Schedule the cron job to make a request every 10 minutes to keep the API alive
-// cron.schedule('*/14 * * * *', async () => {
-//     try {
-//       // Make a GET request to a specific endpoint (e.g., /api/keep-alive)
-//       const response = await axios.get(`https://series-api-nld9.onrender.com/series/?page=1`)
-//       console.log('Response:', response.data);
-//     } catch (error) {
-//       console.error('Error:', error.message);
-//     } console.error('Keep-alive request error:', error);
-//   });
+Schedule the cron job to make a request every 10 minutes to keep the API alive
+cron.schedule('*/14 * * * *', async () => {
+    try {
+      // Make a GET request to a specific endpoint (e.g., /api/keep-alive)
+      const response = await axios.get(`https://series-api-nld9.onrender.com/series/?page=1`)
+      console.log('Response:', response.data);
+    } catch (error) {
+      console.error('Error:', error.message);
+    } console.error('Keep-alive request error:', error);
+  });
 
 module.exports = app;
