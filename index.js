@@ -33,7 +33,7 @@ main()
         return console.log("DB connected...");
     }).catch(console.error);
 
-Schedule the cron job to make a request every 10 minutes to keep the API alive
+// Schedule the cron job to make a request every 10 minutes to keep the API alive
 cron.schedule('*/14 * * * *', async () => {
     try {
       // Make a GET request to a specific endpoint (e.g., /api/keep-alive)
