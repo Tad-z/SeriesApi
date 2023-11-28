@@ -18,6 +18,7 @@ exports.postSeries = async (req, res) => {
       genre: req.body.genre.toLowerCase(),
       FavCast: req.body.FavCast,
       status: req.body.status,
+      link: req.body.link,
     });
 
     const savedSeries = await series.save();
