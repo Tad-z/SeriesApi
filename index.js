@@ -20,7 +20,7 @@ app.use(cors({
 }));
 app.use(morgan("dev"));
 app.use(express.urlencoded({ extended: true }));
-// app.use('/uploads', express.static('/opt/render/project/src/uploads'));
+app.use('/uploads', express.static('/opt/render/project/src/uploads'));
 app.use('/uploads', express.static('uploads'))
 app.use("/series", seriesRouter);
 app.use("/sortedSeries", sortedSeriesRouter);
