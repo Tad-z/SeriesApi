@@ -1,4 +1,5 @@
 const Series = require("../models/series.js");
+const cloudinary = require("../utils/cloudinary.js")
 const paginatedResults = require("./paginatedResults.js");
 
 
@@ -12,13 +13,17 @@ exports.postSeries = async (req, res) => {
       });
     }
 
+    const path = req.file.path
+    const result = await cloudinary.uploader.upload(path);
+
     const series = new Series({
-      image: req.file.path,
+      image: result.secure_url,
       name: req.body.name.toLowerCase(),
       genre: req.body.genre.toLowerCase(),
       FavCast: req.body.FavCast,
       status: req.body.status,
       link: req.body.link,
+      cloudinary_id: result.public_id,
     });
 
     const savedSeries = await series.save();
